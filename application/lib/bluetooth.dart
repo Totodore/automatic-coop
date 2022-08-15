@@ -47,11 +47,26 @@ class Bluetooth {
     await _getPreviousDevice();
 
     if (_address == null || !await _connectToPreviousDevice()) {
-      
-      final result = await FlutterBluetoothSerial.instance.startDiscovery()
-        .singleWhere((element) => element.device.name?.startsWith("Poulailler") ?? false);
-      await FlutterBluetoothSerial.instance.cancelDiscovery();
-      if (!await _connectToDevice(result.device)) {
+      try {
+        BluetoothDiscoveryResult result = await FlutterBluetoothSerial.instance.startDiscovery()
+          // .timeout(const Duration(seconds: 20))
+          // .map((el) {
+          //   logger.i('Device: ${el.device.name}');
+          //   return el;
+          // })
+          .singleWhere((element) => element.device.name?.startsWith("Poulailler") ?? false);
+        await FlutterBluetoothSerial.instance.cancelDiscovery();
+        if (!await _connectToDevice(result.device)) {
+          return false;
+        }
+      } on TimeoutException {
+        logger.e('Timeout while searching for bluetooth device');
+        return false;
+      } on Exception {
+        logger.e('Error while searching for bluetooth device');
+        return false;
+      } catch(e) {
+        logger.e('Error while searching for bluetooth device: $e');
         return false;
       }
     }

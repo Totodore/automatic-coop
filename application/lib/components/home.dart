@@ -34,10 +34,11 @@ class _HomeState extends State<Home> {
   }
 
   void init() async {
-    await _connect();
-    doorOpen = await bluetooth.getDoorState();
-    doorFree = await bluetooth.getDoorFree();
-    setState(() { });
+    if (await _connect()) {
+      doorOpen = await bluetooth.getDoorState();
+      doorFree = await bluetooth.getDoorFree();
+      setState(() { });
+    }
   }
 
   @override
@@ -48,17 +49,19 @@ class _HomeState extends State<Home> {
     widget.logger.i("Bluetooth disconnected");
   }
 
-  Future<void> _connect() async {
+  Future<bool> _connect() async {
     if (bluetooth.isConnected) {
       await bluetooth.disconnect();
     }
     if (await bluetooth.connect()) {
       setState(() => isLoading = false);
+      return true;
     } else {
       showDialog(context: context, builder: (_) => BleFailed(() {
         Navigator.of(context).pop();
-        _connect();
+        // _connect();
       }), barrierDismissible: false);
+      return false;
     } 
   }
 
