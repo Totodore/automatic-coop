@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include <DS3231.h>
+#include <RTClib.h>
 #include <Wire.h>
 
 #include <string.h>
@@ -28,10 +28,7 @@ private:
 	uint16_t getWeekOfTheYear(uint32_t time);
 	uint32_t getTimestamp();
 private:
-	DS3231 rtc;
+	RTC_DS3231 rtc;
 	uint8_t sunset[52][2];
 	uint8_t sunrise[52][2];
-	bool century = false;
-	bool pm = false;
-	bool h12 = false;
 };

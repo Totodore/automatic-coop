@@ -8,17 +8,21 @@ CClock::CClock()
 
 void CClock::init()
 {
-	Wire.begin();
-	Serial.println("RTC started!");
+	// Wire.begin();
+	if (rtc.begin())
+		Serial.println("RTC started!");
+	else
+		Serial.println("RTC not found!");
+
+	if (rtc.lostPower())
+		Serial.println("RTC lost power, rtc time is 00 !");
 }
 
 bool CClock::isDayTime()
 {
 	uint16_t weekOfYear = getWeekOfTheYear();
-
-	DateTime rise = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0);
-	DateTime set = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0);
-
+	DateTime rise = DateTime(rtc.now().year(), rtc.now().month(), rtc.now().day(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0);
+	DateTime set = DateTime(rtc.now().year(), rtc.now().month(), rtc.now().day(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0);
 	return getTimestamp() < set.unixtime() && getTimestamp() > rise.unixtime();
 }
 
@@ -26,8 +30,8 @@ void CClock::printInfo()
 {
 	uint16_t weekOfYear = getWeekOfTheYear();
 
-	DateTime rise = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0);
-	DateTime set = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0);
+	DateTime rise = DateTime(rtc.now().year(), rtc.now().month(), rtc.now().day(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0);
+	DateTime set = DateTime(rtc.now().year(), rtc.now().month(), rtc.now().day(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0);
 
 	Serial.print("[CLOCK] ->");
 	Serial.print(" SUNSET: [");
@@ -41,15 +45,15 @@ void CClock::printInfo()
 	Serial.print(rise.minute());
 
 	Serial.print("] | NOW: [");
-	Serial.print(rtc.getDate(), DEC);
+	Serial.print(rtc.now().day(), DEC);
 	Serial.print("/");
-	Serial.print(rtc.getMonth(century), DEC);
+	Serial.print(rtc.now().month(), DEC);
 	Serial.print("/");
-	Serial.print(rtc.getYear(), DEC);
+	Serial.print(rtc.now().year(), DEC);
 	Serial.print(" ");
-	Serial.print(rtc.getHour(h12, pm), DEC); // 24-hr
+	Serial.print(rtc.now().hour(), DEC); // 24-hr
 	Serial.print(":");
-	Serial.print(rtc.getMinute(), DEC);
+	Serial.print(rtc.now().minute(), DEC);
 	Serial.println("]");
 }
 
@@ -78,7 +82,7 @@ uint16_t CClock::getWeekOfTheYear()
 
 uint32_t CClock::getTimestamp()
 {
-	return DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), rtc.getHour(h12, pm), rtc.getMinute(), rtc.getSecond()).unixtime();
+	return rtc.now().unixtime();
 }
 
 uint32_t CClock::getCurrentTime()
@@ -87,7 +91,7 @@ uint32_t CClock::getCurrentTime()
 }
 void CClock::setCurrentTime(uint32_t time)
 {
-	rtc.setEpoch(time);
+	rtc.adjust(DateTime(time));
 }
 uint32_t CClock::getSunriseTime(uint32_t time)
 {

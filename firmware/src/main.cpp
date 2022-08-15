@@ -1,10 +1,10 @@
 #include <Arduino.h>
 
 #include "motor.hpp"
-#include "clock.hpp"
+#include "cclock.hpp"
 #include "ble.hpp"
 
-Clock clock;
+CClock clock;
 Motor motor;
 Ble ble(motor, clock);
 

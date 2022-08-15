@@ -1,6 +1,6 @@
 #include "ble.hpp"
 
-Ble::Ble(Motor &motor, Clock &clock) : m_serial(TX_PIN, RX_PIN), m_motor(motor), m_clock(clock) {}
+Ble::Ble(Motor &motor, CClock &clock) : m_serial(TX_PIN, RX_PIN), m_motor(motor), m_clock(clock) {}
 void Ble::init()
 {
 	m_serial.begin(9600);
@@ -12,6 +12,7 @@ void Ble::configMode()
 {
 	if (!AT_MODE)
 		return;
+	Serial.println("Entering config mode...");
 	while (true)
 	{
 		// Keep reading from HC-05 and send to Arduino Serial Monitor
