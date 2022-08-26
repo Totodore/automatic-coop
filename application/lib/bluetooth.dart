@@ -30,13 +30,11 @@ class Bluetooth {
   Bluetooth._();
 
   final Logger logger = Logger(printer: SimplePrinter(printTime: true));
-  Timer? _ackTimer;
   String? _name;
   String? _address;
 
   BluetoothConnection? _connection;
 
-  bool _bufferLocked = false;
   List<Packet> _buffer = [];  
 
   Future<bool> connect() async {
@@ -87,7 +85,6 @@ class Bluetooth {
         builder.clear();
       }
     });
-    _ackTimer = Timer.periodic(const Duration(seconds: 5), (_) => ack());
   }
 
   Future<void> _getPreviousDevice() async {
@@ -133,7 +130,6 @@ class Bluetooth {
   String get name => _connection?.isConnected == true ? _name! : "Aucun poulailler detecté";
   bool get isConnected => _connection?.isConnected ?? false;
   Future<void> disconnect() async {
-    _ackTimer?.cancel();
     _buffer = [];
     await _connection?.close();
     _connection?.dispose();
@@ -159,14 +155,6 @@ class Bluetooth {
   Future<Packet?> readPacket(Flags wantedFlag, [Uint8List? data]) {
 
     return _findBufferVal(wantedFlag, data);
-  }
-
-  Future<void> ack() async {
-    Uint8List data = Uint8List.fromList(List.generate(4, (index) => Random().nextInt(255)));
-    await sendPacket(Flags.ack, data);
-    if (await readPacket(Flags.ack, data) == null) {
-      logger.e("Ack timeout for ${data.toHexString()}");
-    }
   }
 
   Future<int> getTemperature() async {

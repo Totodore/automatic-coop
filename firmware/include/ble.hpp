@@ -21,6 +21,7 @@ class Ble
 		OPEN_DOOR = 0x07,
 		FREE_DOOR = 0x08,
 		SET_CURRENT_TIME = 0x09,
+		GET_DOOR_FREE = 0x0A,
 	};
 
 public:

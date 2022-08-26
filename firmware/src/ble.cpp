@@ -41,19 +41,19 @@ void Ble::loop()
 void Ble::readPacket()
 {
 	uint8_t packet[5]; // packet
-	m_serial.readBytes(packet, 5);
+	m_serial.readBytes(&packet[0], 5);
 	Serial.print("[BLE] <- ");
 	uint32_t data;
-	memcpy(packet + 1, &data, 4);
+	memcpy(&data, &packet[1], 4);
 	switch (packet[0])
 	{
-	case Flags::ACK:
-		Serial.print("ACK");
-		sendPacket(Flags::ACK);
-		break;
 	case Flags::GET_DOOR_STATUS:
 		Serial.print("GET_DOOR_STATUS");
 		sendPacket(Flags::GET_DOOR_STATUS, (uint32_t)m_motor.isOpen());
+		break;
+	case Flags::GET_DOOR_FREE:
+		Serial.print("GET_DOOR_FREE");
+		sendPacket(Flags::GET_DOOR_FREE, (uint32_t)!m_motor.hasHumanInteraction());
 		break;
 	case Flags::GET_CURRENT_TIME:
 		Serial.print("GET_CURRENT_TIME");
@@ -63,7 +63,10 @@ void Ble::readPacket()
 	{
 		Serial.print("GET_CURRENT_TEMPERATURE");
 		float temp = m_clock.getCurrentTemperature();
+		Serial.print("temp: ");
+		Serial.println(temp);
 		sendPacket(Flags::GET_CURRENT_TEMPERATURE, (void *)&temp);
+		Serial.println("Packet sent");
 		break;
 	}
 	case Flags::GET_SUNSET_TIME:

@@ -4,17 +4,17 @@
 #include "cclock.hpp"
 #include "ble.hpp"
 
-CClock clock;
+CClock cclock;
 Motor motor;
-Ble ble(motor, clock);
+Ble ble(motor, cclock);
 
-unsigned long time = 0;
+unsigned long currTime = 0;
 void setup(void)
 {
 	// Start the serial port
 	Serial.begin(9600);
 	Serial.println("Demarrage de la carte...");
-	clock.init();
+	cclock.init();
 	motor.init();
 	ble.init();
 	Serial.println("Demarrage de la carte termine!");
@@ -26,15 +26,15 @@ void loop(void)
 
 	// Si l'heure actuelle est comprise entre le levé et le coucher de soleil
 	// si il fait jour et que on a pas forcé l'ouverture ou la fermeture
-	if (clock.isDayTime() && !motor.isOpen() && !motor.hasHumanInteraction())
+	if (cclock.isDayTime() && !motor.isOpen() && !motor.hasHumanInteraction())
 		motor.open();
-	else if (!clock.isDayTime() && motor.isOpen() && !motor.hasHumanInteraction())
+	else if (!cclock.isDayTime() && motor.isOpen() && !motor.hasHumanInteraction())
 		motor.close();
 
-	if (time == 0 || millis() - time > 30000)
+	if (currTime == 0 || millis() - currTime > 30000)
 	{
-		clock.printInfo();
-		time = millis();
+		cclock.printInfo();
+		currTime = millis();
 	}
 	ble.loop();
 }
