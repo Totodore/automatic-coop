@@ -42,8 +42,8 @@ private:
 	void sendPacket(Flags flag, void *data); 	// data is an array of 4 bytes
 private:
 	SoftwareSerial m_serial;
-	Motor m_motor;
-	CClock m_clock;
+	Motor& m_motor;
+	CClock& m_clock;
 	constexpr static uint8_t AT_PIN = 7;
 	constexpr static uint8_t TX_PIN = 6;
 	constexpr static uint8_t RX_PIN = 5;

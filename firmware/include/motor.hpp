@@ -7,6 +7,7 @@ public:
 	void open(bool fromHuman = false);
 	void close(bool fromHuman = false);
 	void free();
+	void printInfo() const;
 	bool isOpen() const;
 	bool hasHumanInteraction() const;
 private:

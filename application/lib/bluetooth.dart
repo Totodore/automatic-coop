@@ -206,7 +206,7 @@ class Bluetooth {
   }
 
   Future<void> setCurrentTime() async {
-    int epoch = (DateTime.now().toLocal().millisecondsSinceEpoch / 1000).round().toUnsigned(32);
+    int epoch = (DateTime.now().millisecondsSinceEpoch / 1000).round().toUnsigned(32);
     final data = Uint8List.fromList([epoch & 0xFF, (epoch >> 8) & 0xFF, (epoch >> 16) & 0xFF, (epoch >> 24) & 0xFF]);
     logger.d(data.toHexString());
     logger.d(data.buffer.asByteData().getUint32(0, Endian.little));
@@ -214,7 +214,7 @@ class Bluetooth {
   }
 
   Future<DateTime> getSunsetTime() async {
-    int epoch = (DateTime.now().toLocal().millisecondsSinceEpoch / 1000).round().toUnsigned(32);
+    int epoch = (DateTime.now().millisecondsSinceEpoch / 1000).round().toUnsigned(32);
     final data = Uint8List.fromList([epoch & 0xFF, (epoch >> 8) & 0xFF, (epoch >> 16) & 0xFF, (epoch >> 24) & 0xFF]);
     await sendPacket(Flags.getSunsetTime, data);
     final packet = await readPacket(Flags.getSunsetTime);
@@ -225,7 +225,7 @@ class Bluetooth {
   }
 
   Future<DateTime> getSunriseTime() async {
-    int epoch = (DateTime.now().toLocal().millisecondsSinceEpoch / 1000).round().toUnsigned(32);
+    int epoch = (DateTime.now().millisecondsSinceEpoch / 1000).round().toUnsigned(32);
     final data = Uint8List.fromList([epoch & 0xFF, (epoch >> 8) & 0xFF, (epoch >> 16) & 0xFF, (epoch >> 24) & 0xFF]);
     await sendPacket(Flags.getSunriseTime, data);
     final packet = await readPacket(Flags.getSunriseTime);

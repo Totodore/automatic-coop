@@ -27,13 +27,14 @@ void loop(void)
 	// Si l'heure actuelle est comprise entre le levé et le coucher de soleil
 	// si il fait jour et que on a pas forcé l'ouverture ou la fermeture
 	if (cclock.isDayTime() && !motor.isOpen() && !motor.hasHumanInteraction())
-		motor.open();
+		motor.open(false);
 	else if (!cclock.isDayTime() && motor.isOpen() && !motor.hasHumanInteraction())
-		motor.close();
+		motor.close(false);
 
 	if (currTime == 0 || millis() - currTime > 30000)
 	{
 		cclock.printInfo();
+		motor.printInfo();
 		currTime = millis();
 	}
 	ble.loop();

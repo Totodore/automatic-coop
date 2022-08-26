@@ -76,12 +76,12 @@ void Ble::readPacket()
 		break;
 	case Flags::CLOSE_DOOR:
 		Serial.print("CLOSE_DOOR");
-		m_motor.close();
+		m_motor.close(true);
 		sendPacket(Flags::CLOSE_DOOR);
 		break;
 	case Flags::OPEN_DOOR:
 		Serial.print("OPEN_DOOR");
-		m_motor.open();
+		m_motor.open(true);
 		sendPacket(Flags::OPEN_DOOR);
 		break;
 	case Flags::FREE_DOOR:
@@ -95,7 +95,10 @@ void Ble::readPacket()
 		sendPacket(Flags::SET_CURRENT_TIME);
 		break;
 	}
-	Serial.println(" [" + String(data) + "]");
+	if (data)
+		Serial.println(" [" + String(data) + "]");
+	else
+		Serial.println();
 }
 
 void Ble::sendPacket(Flags flag, uint32_t data)

@@ -151,7 +151,7 @@ class _HomeState extends State<Home> {
                 future: temp != null ? Future.value(temp) : bluetooth.getTemperature().then((value) => temp = value)
               ),
               StreamBuilder<DateTime?>(
-                builder: (_, snapshot) => _info(Icons.schedule, snapshot.hasData ? snapshot.data?.toLocaleString() : null),
+                builder: (_, snapshot) => _info(Icons.schedule, snapshot.hasData ? snapshot.data!.toLocal().toLocaleString() : null),
                 stream: Stream.periodic(const Duration(seconds: 1))
                   .asyncMap((_) async => bluetooth.getCurrentTime())
               ),
@@ -161,11 +161,11 @@ class _HomeState extends State<Home> {
               ),
               _divider(),
               FutureBuilder<DateTime?>(
-                builder: (_, snapshot) => _info(Icons.wb_sunny_outlined, snapshot.hasData ? "Ouverture : ${snapshot.data!.toLocaleHourString()}" : null), 
+                builder: (_, snapshot) => _info(Icons.wb_sunny_outlined, snapshot.hasData ? "Ouverture : ${snapshot.data!.toLocal().toLocaleHourString()}" : null), 
                 future: bluetooth.getSunriseTime() 
               ),
               FutureBuilder<DateTime?>(
-                builder: (_, snapshot) => _info(Icons.nightlight_outlined, snapshot.hasData ? "Fermeture : ${snapshot.data!.toLocaleHourString()}" : null),
+                builder: (_, snapshot) => _info(Icons.nightlight_outlined, snapshot.hasData ? "Fermeture : ${snapshot.data!.toLocal().toLocaleHourString()}" : null),
                 future: bluetooth.getSunsetTime()
               )
             ],

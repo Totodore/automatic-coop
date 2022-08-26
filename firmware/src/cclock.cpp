@@ -72,7 +72,7 @@ uint16_t CClock::getWeekOfTheYear()
 
 uint32_t CClock::getTimestamp()
 {
-	return DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), rtc.getHour(h12, pm), rtc.getMinute(), rtc.getSecond()).unixtime();
+	return RTClib::now().unixtime();
 }
 
 uint32_t CClock::getCurrentTime()
