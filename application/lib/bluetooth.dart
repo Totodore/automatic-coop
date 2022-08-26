@@ -202,7 +202,7 @@ class Bluetooth {
     if (packet == null) {
       return null;
     }
-    return DateTime.fromMillisecondsSinceEpoch(packet.data.buffer.asByteData().getUint32(0, Endian.little) * 1000);
+    return DateTime.fromMillisecondsSinceEpoch(packet.data.buffer.asByteData().getUint32(0, Endian.little) * 1000, isUtc: false);
   }
 
   Future<void> setCurrentTime() async {
@@ -214,21 +214,25 @@ class Bluetooth {
   }
 
   Future<DateTime> getSunsetTime() async {
-    await sendPacket(Flags.getSunsetTime);
+    int epoch = (DateTime.now().millisecondsSinceEpoch / 1000).round().toUnsigned(32);
+    final data = Uint8List.fromList([epoch & 0xFF, (epoch >> 8) & 0xFF, (epoch >> 16) & 0xFF, (epoch >> 24) & 0xFF]);
+    await sendPacket(Flags.getSunsetTime, data);
     final packet = await readPacket(Flags.getSunsetTime);
     if (packet == null) {
       return getSunsetTime();
     }
-    return DateTime.fromMillisecondsSinceEpoch(packet.data.buffer.asByteData().getUint32(0, Endian.little));
+    return DateTime.fromMillisecondsSinceEpoch(packet.data.buffer.asByteData().getUint32(0, Endian.little) * 1000, isUtc: true);
   }
 
   Future<DateTime> getSunriseTime() async {
-    await sendPacket(Flags.getSunriseTime);
+    int epoch = (DateTime.now().millisecondsSinceEpoch / 1000).round().toUnsigned(32);
+    final data = Uint8List.fromList([epoch & 0xFF, (epoch >> 8) & 0xFF, (epoch >> 16) & 0xFF, (epoch >> 24) & 0xFF]);
+    await sendPacket(Flags.getSunriseTime, data);
     final packet = await readPacket(Flags.getSunriseTime);
     if (packet == null) {
       return getSunriseTime();
     }
-    return DateTime.fromMillisecondsSinceEpoch(packet.data.buffer.asByteData().getUint32(0, Endian.little));
+    return DateTime.fromMillisecondsSinceEpoch(packet.data.buffer.asByteData().getUint32(0, Endian.little) * 1000, isUtc: true);
   }
 
   Future<Packet?> _findBufferVal(Flags flag, Uint8List? data) {

@@ -8,6 +8,9 @@ extension on DateTime {
   String toLocaleString() {
     return "${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}/${year.toString().padLeft(2, '0')} - ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:${second.toString().padLeft(2, '0')}";
   }
+  String toLocaleHourString() {
+    return "${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:${second.toString().padLeft(2, '0')}";
+  }
 }
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -106,6 +109,8 @@ class _HomeState extends State<Home> {
       title: Text(text, style: const TextStyle(fontSize: 19))
     )
     : const SizedBox.shrink();
+
+  Widget _divider() => const Divider(color: Colors.grey);
   
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -140,6 +145,7 @@ class _HomeState extends State<Home> {
                   ) : const SizedBox.shrink(),
                 ]
               ) : const SizedBox.shrink(),
+              _divider(),
               FutureBuilder<double>(
                 builder: (_, snapshot) => _info(Icons.thermostat, snapshot.hasData ? "Température: ${snapshot.data}°C" : null),
                 future: temp != null ? Future.value(temp) : bluetooth.getTemperature().then((value) => temp = value)
@@ -153,7 +159,15 @@ class _HomeState extends State<Home> {
                 onPressed: () => bluetooth.isConnected ? _updateTime() : null, 
                 child: const Text("Mettre à l'heure du téléphone", style: TextStyle(color: Colors.white)),
               ),
-
+              _divider(),
+              FutureBuilder<DateTime?>(
+                builder: (_, snapshot) => _info(Icons.wb_sunny_outlined, snapshot.hasData ? "Ouverture : ${snapshot.data!.toLocaleHourString()}" : null), 
+                future: bluetooth.getSunriseTime() 
+              ),
+              FutureBuilder<DateTime?>(
+                builder: (_, snapshot) => _info(Icons.nightlight_outlined, snapshot.hasData ? "Fermeture : ${snapshot.data!.toLocaleHourString()}" : null),
+                future: bluetooth.getSunsetTime()
+              )
             ],
           ),
         ) : const SizedBox.shrink(),
