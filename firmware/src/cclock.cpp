@@ -21,7 +21,7 @@ void CClock::printInfo()
 	uint16_t weekOfYear = getWeekOfTheYear();
 	DateTime rise = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0);
 	DateTime set = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0);
-	Serial.println("Rise: " + String(rise.unixtime()) + " - Set: " + String(set.unixtime()) + " - Current: " + String(getTimestamp()) + " - Week: " + String(weekOfYear));
+	Serial.println("[CLOCK] -> Rise: " + String(rise.unixtime()) + " - Set: " + String(set.unixtime()) + " - Current: " + String(getTimestamp()) + " - Week: " + String(weekOfYear));
 
 	Serial.print("[CLOCK] ->");
 	Serial.print(" SUNSET: [");
