@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 constexpr uint16_t maxMonth[12] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-constexpr uint8_t base_sunrise[52][2] = {
+constexpr uint8_t sunrise[52][2] = {
 		{9, 48},	// 09:48
 		{9, 46},	// 09:46
 		{9, 43},	// 09:43
@@ -54,7 +54,7 @@ constexpr uint8_t base_sunrise[52][2] = {
 		{9, 36},	// 09:36
 		{9, 42},	// 09:42
 		{9, 46}}; // 09:46
-constexpr uint8_t base_sunset[52][2] = {
+constexpr uint8_t sunset[52][2] = {
 		{17, 59},
 		{18, 7},
 		{18, 16},

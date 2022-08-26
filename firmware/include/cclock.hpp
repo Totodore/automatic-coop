@@ -11,7 +11,6 @@
 class CClock
 {
 public:
-	CClock();
 	void init();
 	bool isDayTime();
 	void printInfo();
@@ -29,8 +28,6 @@ private:
 	uint32_t getTimestamp();
 private:
 	DS3231 rtc;
-	uint8_t sunset[52][2];
-	uint8_t sunrise[52][2];
 	bool century = false;
 	bool pm = false;
 	bool h12 = false;
