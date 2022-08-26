@@ -4,6 +4,11 @@ import 'package:automatic_coop_app/components/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
+extension on DateTime {
+  String toLocaleString() {
+    return "${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}/${year.toString().padLeft(2, '0')} - ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:${second.toString().padLeft(2, '0')}";
+  }
+}
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
 
@@ -140,7 +145,7 @@ class _HomeState extends State<Home> {
                 future: temp != null ? Future.value(temp) : bluetooth.getTemperature().then((value) => temp = value)
               ),
               StreamBuilder<DateTime?>(
-                builder: (_, snapshot) => _info(Icons.schedule, snapshot.hasData ? snapshot.data.toString() : null),
+                builder: (_, snapshot) => _info(Icons.schedule, snapshot.hasData ? snapshot.data?.toLocaleString() : null),
                 stream: Stream.periodic(const Duration(seconds: 1))
                   .asyncMap((_) async => bluetooth.getCurrentTime())
               ),
