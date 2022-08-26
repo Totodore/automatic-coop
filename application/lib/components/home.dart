@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
 
   String get title => isLoading ? "Recherche d'un poulailler..." : bluetooth.name;
 
-  int? temp;
+  double? temp;
 
   bool? doorOpen;
   bool? doorFree;
@@ -135,7 +135,7 @@ class _HomeState extends State<Home> {
                   ) : const SizedBox.shrink(),
                 ]
               ) : const SizedBox.shrink(),
-              FutureBuilder<int>(
+              FutureBuilder<double>(
                 builder: (_, snapshot) => _info(Icons.thermostat, snapshot.hasData ? "Température: ${snapshot.data}°C" : null),
                 future: temp != null ? Future.value(temp) : bluetooth.getTemperature().then((value) => temp = value)
               ),

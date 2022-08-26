@@ -157,13 +157,13 @@ class Bluetooth {
     return _findBufferVal(wantedFlag, data);
   }
 
-  Future<int> getTemperature() async {
+  Future<double> getTemperature() async {
     await sendPacket(Flags.getCurrentTemp);
     final packet = await readPacket(Flags.getCurrentTemp);
     if (packet == null) {
       return getTemperature();
     }
-    return packet.data.buffer.asByteData().getInt32(0, Endian.little);
+    return packet.data.buffer.asByteData().getFloat32(0, Endian.little);
   }
 
   Future<bool> getDoorState() async {

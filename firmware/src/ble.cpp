@@ -63,10 +63,7 @@ void Ble::readPacket()
 	{
 		Serial.print("GET_CURRENT_TEMPERATURE");
 		float temp = m_clock.getCurrentTemperature();
-		Serial.print("temp: ");
-		Serial.println(temp);
 		sendPacket(Flags::GET_CURRENT_TEMPERATURE, (void *)&temp);
-		Serial.println("Packet sent");
 		break;
 	}
 	case Flags::GET_SUNSET_TIME:
