@@ -112,7 +112,7 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
           child: Column(
             children: [
-              doorOpen != null ? _info(Icons.door_back_door_outlined, doorOpen! ? "Porte ouverte" : "Porte fermée") : const SizedBox.shrink(),
+              doorOpen != null ? _info(!doorOpen! ? Icons.door_back_door : Icons.door_back_door_outlined, doorOpen! ? "Porte ouverte" : "Porte fermée") : const SizedBox.shrink(),
               doorOpen != null ? Row(mainAxisSize: MainAxisSize.min, 
                 children: [
                   Expanded(
