@@ -12,7 +12,7 @@ void Ble::configMode()
 {
 	if (!AT_MODE)
 		return;
-	Serial.println("Entering config mode...");
+	Serial.println("[BLE] Entering config mode...");
 	while (true)
 	{
 		// Keep reading from HC-05 and send to Arduino Serial Monitor

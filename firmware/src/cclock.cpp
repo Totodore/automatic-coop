@@ -3,7 +3,7 @@
 void CClock::init()
 {
 	Wire.begin();
-	Serial.println("RTC started!");
+	Serial.println("[CLOCK] -> RTC started!");
 }
 
 bool CClock::isDayTime()
@@ -81,11 +81,21 @@ uint32_t CClock::getCurrentTime()
 }
 /**
  * For a weird reason the epoch for the RTC starts at 1/1/2000 and not 1/1/1970
+ * We substract 30 years and add 1 day to get the correct epoch
  */
 void CClock::setCurrentTime(uint32_t time)
 {
 	rtc.setEpoch(time, true);
 	rtc.setYear(rtc.getYear() - 30);
+	if (rtc.getDate() + 1u > maxMonth[rtc.getMonth(century) - 1])
+	{
+		rtc.setDate(1);
+		rtc.setMonth(rtc.getMonth(century) + 1);
+	}
+	else
+	{
+		rtc.setDate(rtc.getDate() + 1);
+	}
 }
 uint32_t CClock::getSunriseTime(uint32_t time)
 {
