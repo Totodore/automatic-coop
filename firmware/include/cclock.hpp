@@ -26,9 +26,12 @@ private:
 	uint16_t getWeekOfTheYear();
 	uint16_t getWeekOfTheYear(uint32_t time);
 	uint32_t getTimestamp();
+
 private:
 	DS3231 rtc;
 	bool century = false;
 	bool pm = false;
 	bool h12 = false;
+	constexpr static int16_t rise_offset = 0;
+	constexpr static int16_t set_offset = -30 * 60;	// 30 minutes
 };

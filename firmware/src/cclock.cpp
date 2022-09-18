@@ -8,12 +8,9 @@ void CClock::init()
 
 bool CClock::isDayTime()
 {
-	uint16_t weekOfYear = getWeekOfTheYear();
-
-	DateTime rise = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0);
-	DateTime set = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0);
-
-	return getTimestamp() < set.unixtime() && getTimestamp() > rise.unixtime();
+	uint32_t rise = getSunriseTime(getTimestamp());
+	uint32_t set = getSunsetTime(getTimestamp());
+	return getTimestamp() < set && getTimestamp() > rise;
 }
 
 void CClock::printInfo()
@@ -21,7 +18,7 @@ void CClock::printInfo()
 	uint16_t weekOfYear = getWeekOfTheYear();
 	DateTime rise = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0);
 	DateTime set = DateTime(rtc.getYear(), rtc.getMonth(century), rtc.getDate(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0);
-	Serial.println("[CLOCK] -> Rise: " + String(rise.unixtime()) + " - Set: " + String(set.unixtime()) + " - Current: " + String(getTimestamp()) + " - Week: " + String(weekOfYear));
+	Serial.println("[CLOCK] -> Rise: " + String(rise.unixtime() - 3600) + " - Set: " + String(set.unixtime() - 3600) + " - Current: " + String(getTimestamp()) + " - Week: " + String(weekOfYear));
 
 	Serial.print("[CLOCK] ->");
 	Serial.print(" SUNSET: [");
@@ -101,13 +98,15 @@ uint32_t CClock::getSunriseTime(uint32_t time)
 {
 	uint16_t weekOfYear = getWeekOfTheYear(time);
 	DateTime dt(time);
-	return DateTime(dt.year(), dt.month(), dt.day(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0).unixtime();
+	auto timestamp = DateTime(dt.year(), dt.month(), dt.day(), sunrise[weekOfYear - 1][0], sunrise[weekOfYear - 1][1], 0).unixtime();
+	return timestamp - 3600 * 2 + rise_offset;
 }
 uint32_t CClock::getSunsetTime(uint32_t time)
 {
 	uint16_t weekOfYear = getWeekOfTheYear(time);
 	DateTime dt(time);
-	return DateTime(dt.year(), dt.month(), dt.day(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0).unixtime();
+	auto timestamp = DateTime(dt.year(), dt.month(), dt.day(), sunset[weekOfYear - 1][0], sunset[weekOfYear - 1][1], 0).unixtime();
+	return timestamp - 3600 * 2 + set_offset;
 }
 
 float CClock::getCurrentTemperature()
