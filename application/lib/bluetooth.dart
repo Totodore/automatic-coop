@@ -40,34 +40,16 @@ class Bluetooth {
     FlutterBluetoothSerial.instance.onStateChanged().listen((state) {
       logger.d('Bluetooth state changed: $state');
     });
-    await FlutterBluetoothSerial.instance.requestEnable();
-    await _getPreviousDevice();
 
-    if (_address == null || !await _connectToPreviousDevice()) {
-      try {
-        BluetoothDiscoveryResult result = await FlutterBluetoothSerial.instance.startDiscovery()
-          // .timeout(const Duration(seconds: 20))
-          // .map((el) {
-          //   logger.i('Device: ${el.device.name}');
-          //   return el;
-          // })
-          .singleWhere((element) => element.device.name?.startsWith("Poulailler") ?? false);
-        await FlutterBluetoothSerial.instance.cancelDiscovery();
-        if (!await _connectToDevice(result.device)) {
-          return false;
-        }
-      } on TimeoutException {
-        logger.e('Timeout while searching for bluetooth device');
-        return false;
-      } on Exception {
-        logger.e('Error while searching for bluetooth device');
-        return false;
-      } catch(e) {
-        logger.e('Error while searching for bluetooth device: $e');
-        return false;
-      }
+    await FlutterBluetoothSerial.instance.requestEnable();
+    try {
+      await _getPreviousDevice();
+      await _connectToDevice(const BluetoothDevice(address: "98:D3:41:F6:60:F9", name: "Poulailler la Fauchetterie"));
+      _listenPacket();
+    } catch(e) {
+      logger.e(e);
+      return false;
     }
-    _listenPacket();
     return true;
   }
 
@@ -88,8 +70,10 @@ class Bluetooth {
 
   Future<void> _getPreviousDevice() async {
     final prefs = await SharedPreferences.getInstance();
-    _name = prefs.getString("bluetooth_name");
-    _address = prefs.getString("bluetooth_address");
+    // _name = prefs.getString("bluetooth_name");
+    // _address = prefs.getString("bluetooth_address");
+    _name = "Poulailler la Fauchetterie";
+    _address = "98:D3:41:F6:60:F9";
   }
 
   Future<bool> _connectToPreviousDevice() async {

@@ -3,6 +3,7 @@ import 'package:automatic_coop_app/components/ble_failed.dart';
 import 'package:automatic_coop_app/components/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 extension on DateTime {
   String toLocaleString() {
@@ -42,6 +43,11 @@ class _HomeState extends State<Home> {
   }
 
   void init() async {
+    await Permission.bluetooth.request();
+    await Permission.bluetoothScan.request();
+    await Permission.bluetoothAdvertise.request();
+    await Permission.bluetoothConnect.request();
+    await Permission.location.request();
     if (await _connect()) {
       doorOpen = await bluetooth.getDoorState();
       doorFree = await bluetooth.getDoorFree();
@@ -67,7 +73,7 @@ class _HomeState extends State<Home> {
     } else {
       showDialog(context: context, builder: (_) => BleFailed(() {
         Navigator.of(context).pop();
-        // _connect();
+        _connect();
       }), barrierDismissible: false);
       return false;
     } 
