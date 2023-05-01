@@ -2,15 +2,17 @@
 
 void Motor::init()
 {
-	pinMode(pinMoteurPWM, OUTPUT);
-	pinMode(pinMoteurDir, OUTPUT);
+	pinMode(pinMotorPWM, OUTPUT);
+	pinMode(pinMotorDir, OUTPUT);
+
+	// With PWM H bridge, the motor is always on
+	digitalWrite(pinMotorPWM, HIGH);
 }
 
 void Motor::open(bool fromHuman)
 {
 	Serial.println("[DOOR] -> OPENING");
-	digitalWrite(pinMoteurDir, LOW);
-	digitalWrite(pinMoteurPWM, HIGH);
+	digitalWrite(pinMotorDir, HIGH);
 	isopen = true;
 	humanInteraction = fromHuman;
 }
@@ -18,8 +20,7 @@ void Motor::open(bool fromHuman)
 void Motor::close(bool fromHuman)
 {
 	Serial.println("[DOOR] -> CLOSING");
-	digitalWrite(pinMoteurDir, HIGH);
-	digitalWrite(pinMoteurPWM, LOW);
+	digitalWrite(pinMotorDir, LOW);
 	isopen = false;
 	humanInteraction = fromHuman;
 }

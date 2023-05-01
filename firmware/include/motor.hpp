@@ -11,8 +11,8 @@ public:
 	bool isOpen() const;
 	bool hasHumanInteraction() const;
 private:
-	static constexpr int pinMoteurPWM = 3;
-	static constexpr int pinMoteurDir = 2;
+	static constexpr int pinMotorPWM = 3;
+	static constexpr int pinMotorDir = 2;
 	bool isopen = true;
 	bool humanInteraction = false;
 };
